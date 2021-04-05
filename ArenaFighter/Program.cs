@@ -196,13 +196,13 @@ namespace ArenaFighter
                 WriteAt(Opponent.UserName, 83, 5);
                 Console.BackgroundColor = tmp;
 
-                WriteAt("Strenght: = " + MyAvatar.Strengt, 25, 7);
-                WriteAt("Luck:     = " + MyAvatar.Luck, 25, 8);
-                WriteAt("Cash:     = " + MyAvatar.Cash, 25, 9);
+                WriteAt("Styrka:   = " + MyAvatar.Strengt, 25, 7);
+                WriteAt("Tur:      = " + MyAvatar.Luck, 25, 8);
+                WriteAt("Pengar:   = " + MyAvatar.Cash, 25, 9);
 
-                WriteAt("Strenght: = " + Opponent.Strengt, 83, 7);
-                WriteAt("Luck:     = " + Opponent.Luck, 83, 8);
-                WriteAt("Cash:     = " + Opponent.Cash, 83, 9);
+                WriteAt("Styrka:   = " + Opponent.Strengt, 83, 7);
+                WriteAt("Tur:      = " + Opponent.Luck, 83, 8);
+                WriteAt("Pengar:   = " + Opponent.Cash, 83, 9);
 
                 Gr.NewGameArena();
 
@@ -347,6 +347,12 @@ namespace ArenaFighter
             if (LuckyDize == -99)       // Cheat code no dize graphic.
             {
                 MyAvatar.TrowDiceNoGr();
+
+                if (Opponent.Strengt < 5)
+                {
+                    Opponent.TrowLuckyDice(5);              // Autoselect Opponent Luck
+                }
+                else    
                 Opponent.TrowDiceNoGr();
             }
             else
