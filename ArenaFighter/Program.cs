@@ -13,6 +13,7 @@ namespace ArenaFighter
         static Avatar Opponent = new Avatar();
         static Graph Gr = new Graph();
 
+        static bool GameEnd = false;
         static int Round;
         static int Game;
         static string log = "";
@@ -62,8 +63,6 @@ namespace ArenaFighter
                     case '2':
                         {
                             ShowLog();
-                            Console.Clear();
-                            Gr.FirstMenu();
                             break;
                         }
 
@@ -82,46 +81,55 @@ namespace ArenaFighter
             } while (true);     
         }
 
-
-
         static void ShowLog()
         {
             int logindex = 0;
-            char key;
+          
             Gr.LogMenu();
             Log.LogString();
-           // LoggToScreen = Log.LogData.ToString().Split(';');
-
+        
             logindex = 0;
             logindex = Log.ShowLogOnScreen(logindex, 0);
 
             do
             {
-                key = Console.ReadKey().KeyChar;
-                key = char.ToUpper(key);
-                
-                switch (key)
+                var key = Console.ReadKey(); //.KeyChar;
+                //key = char.ToUpper(key);
+
+                switch (key.Key)
                 {
-                    case 'U':
+                    case (ConsoleKey)'U':         // This is how "or" is done :o
+                    case (ConsoleKey)'u':
                         {
-                            // logindex -= 6; // --;
-                            logindex = Log.ShowLogOnScreen(logindex,1);
+                            logindex = Log.ShowLogOnScreen(logindex, 1);
                             break;
                         }
 
-
-                    case 'N':
+                    case (ConsoleKey)'N': 
+                    case (ConsoleKey)'n':
                         {
-                            // logindex += 6; //++;
-                            logindex = Log.ShowLogOnScreen(logindex,0);
+                            logindex = Log.ShowLogOnScreen(logindex, 0);
                             break;
                         }
 
-                  }
+                    case ConsoleKey.PageUp:
+                        {
+                            logindex = Log.ShowLogOnScreen(logindex, 1);
+                            break;
+                        }
 
-            } while (key != '\u001B');  // \u001B = ConsoleKey.Escape
+                    case ConsoleKey.PageDown:
+                        {
+                            logindex = Log.ShowLogOnScreen(logindex, 0);
+                            break;
+                        }
 
-            return;
+                    case ConsoleKey.Escape:
+                        {
+                            return;
+                        }
+                }
+            } while (true);         
         }
 
         static void SaveLog()
@@ -230,16 +238,18 @@ namespace ArenaFighter
                 key = Console.ReadKey().KeyChar;
                 key = char.ToUpper(key);
 
+                Console.CursorVisible = true;
+
                 switch (key)
                 {
-                    case '\u000D':              //  Cheat code... Lazy Trow dice on Enter.
+                    case '\u000D':              //  Lazy dice trow on Enter.
                         {
                             ThrowDice(-99);
                             Round++;
                             break;
                         }
 
-                    case 'K':              // Trow dice.
+                    case 'K':                   // Trow dice.
                         {
                             ThrowDice(0);
                             Round++;
@@ -276,6 +286,12 @@ namespace ArenaFighter
                             ThrowDice(0);
                             break;
                         }
+
+                    case '\u001B':
+                        {
+                            if (StayInGame()) break;        // Stay
+                            else return false;              // Quit
+                        }
                 }
 
                 if (GameEnd)
@@ -283,8 +299,20 @@ namespace ArenaFighter
                     return true;        // Game end,  Win / Loss.
                 }
 
-            } while (key != '\u001B');  // \u001B = ConsoleKey.Escape
-            return false;               // User quit.
+            } while (true); 
+          
+        }
+
+        static bool StayInGame()
+        {
+
+            Gr.QuitGameQuestion();          
+            char key;
+            key = Console.ReadKey().KeyChar;
+            key = char.ToUpper(key);
+            if (key == 'J') return false;       // Quit
+            Gr.ClearGameInfoLine();
+            return true;
         }
 
         static void PlayerStatistic()
@@ -301,14 +329,12 @@ namespace ArenaFighter
             Gr.ArenaFrame();
         }
 
-        static bool GameEnd = false;
         static void BuyStrenght()
         {
             if (MyAvatar.Cash < 1)
             {
                 WriteAt("Tyvärr har du inget kvar, kontot är tomt.", 15, 21);
                 Thread.Sleep(2000);
-                //WriteAt("                                                ", 15, 21);
                 return;
             }
             Console.CursorVisible = true;
@@ -328,7 +354,6 @@ namespace ArenaFighter
             {
                 WriteAt("Tyvärr har du ingen tur kvar. Turkontot är tomt.", 15, 21);
                 Thread.Sleep(2000);
-                //WriteAt("                                                ", 15, 21);
                 return;
             }
             Console.CursorVisible = true;
@@ -344,7 +369,7 @@ namespace ArenaFighter
 
         static void ThrowDice(int LuckyDize)
         {   
-            if (LuckyDize == -99)       // Cheat code no dize graphic.
+            if (LuckyDize == -99)       // -99  User hit Enter. No dize graphic.
             {
                 MyAvatar.TrowDiceNoGr();
 

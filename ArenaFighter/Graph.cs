@@ -46,7 +46,7 @@ namespace ArenaFighter
         public void LogMenu()
         {
             int line = 1;
-               WriteAt( "                'U' = Upp                    ________                     'N' = Ned                       ", 7, line++);
+               WriteAt( "         'U' eller PageUp = Upp              ________             'N' eller PageDown = Ned               ", 7, line++);
                WriteAt(@" ___________________________________________/GAME LOG\___________________________________________________", 7, line++);
 
             for (; line < 42;)
@@ -272,6 +272,21 @@ namespace ArenaFighter
 
 
         int ArenaFrameFirstLine = 21;
+        public void QuitGameQuestion()
+        {
+            int line = ArenaFrameFirstLine;
+            WriteAt("   Vill du verkligen avsluta spelet?    Ja / Nej [?]                   ", 12, line);
+            Console.SetCursorPosition(62, line);
+            Console.CursorVisible = true;
+        }
+
+        public void ClearGameInfoLine()
+        {
+            int line = ArenaFrameFirstLine;
+            WriteAt("                                                                                                  ", 12, line);
+
+        }
+
         public void ArenaFrame()
         {
             int line = ArenaFrameFirstLine;
